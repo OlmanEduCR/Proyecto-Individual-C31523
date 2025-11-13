@@ -1,0 +1,132 @@
+---
+title: "Poryecto_individual_CA0204_C31523"
+author: "Olman Camacho"
+date: "11-14-2025"
+subtitle: "CA-0204 - Herramientas para Ciencias de Datos I"
+titlepage: true
+format:
+  html:
+    toc: true
+    code-fold: true
+    theme: cosmo
+    toc-depth: 3
+    smooth-scroll: true
+editor: visual
+---
+
+=========
+Librerias
+=========
+
+```{r}
+library(tidyverse)
+```
+
+================
+Importar dataset
+================
+
+```{r}
+car_price_prediction_ <- read.csv("C:/Users/oecam/Downloads/car_price_prediction_.csv")
+head(car_price_prediction_)
+```
+
+================================
+Verificación y limpieza de datos
+================================
+
+```{r}
+## Verificar los datos faltantes en el dataset
+colSums(is.na(car_price_prediction_))
+
+## Por temas de simpleza, redondiemos los precios
+car_price_prediction_$Price <- round(car_price_prediction_$Price, 0)
+```
+
+=====================
+Graficos y Relaciones
+=====================
+
+Gráfico Brand-Model-Price
+```{r}
+ggplot(car_price_prediction_) +
+  geom_boxplot(aes(x = Model, y = Price, fill = Brand), show.legend = FALSE) +
+  facet_wrap(~ Brand, scales = "free_x") +
+  scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE)) +
+  labs(title = "Precio por Modelo dentro de cada Marca",
+       x = "Modelo",
+       y = "Precio")
+```
+Este gráfico interpreta cada precio en los modelos y grafica un boxplot que representa las posiciones relativas de dicha variable. La linea negra representa la mediana de los precios.
+
+Gráfico Year-Brand-Price
+```{r}
+ggplot(car_price_prediction_, aes(x = Year, y = Price)) +
+  geom_boxplot(fill = "#8da0cb", color = "black", aes(group = Year), outlier.size = 0.95, outlier.alpha = 0.78) +
+  facet_wrap(~ Brand, scales = "free_y") +  # ← una faceta por marca
+  labs(title = "Distribución del precio de los autos por Año y Marca",
+       x = "Año",
+       y = "Precio") +
+  scale_x_continuous(
+    breaks = seq(min(car_price_prediction_$Year),
+                 max(car_price_prediction_$Year),
+                 by = 5)
+  ) +
+  scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE))
+```
+Este gráfico representa con respecto a las distintas marcas, y según el año de manufacturación del vehículo, la relación que tiene con el precio. Observamos ciertos valores atípicos en la muestra, que escapan del rango intercuartílico.
+
+Gráfico EngineSize-Price
+```{r}
+ggplot(car_price_prediction_) +
+  geom_col(mapping = aes(x = Engine.Size, y = Price), fill = "#302F2A") +
+  labs(title = "Precio por Tamaño del Motor",
+       x = "Tamaño del Motor",
+       y = "Precio") +
+  scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE)) +
+  theme_minimal()
+```
+
+Gráfico Fuel-Price
+```{r}
+ggplot(car_price_prediction_) +
+  geom_col(mapping = aes(x = Fuel.Type, y = Price), fill = "#302F2F") +
+  labs(title = "Precio por Tipo de Motor",
+       x = "Tipo de Motor",
+       y = "Precio") 
+```
+
+Gráfico Transmission-Price
+```{r}
+ggplot(car_price_prediction_) +
+  geom_col(mapping = aes(x = Transmission, y = Price), fill = "#302F2F") +
+  labs(title = "Precio por transmisión",
+       x = "Transmisión",
+       y = "Precio") +
+  theme_minimal()
+```
+
+Gráfico Mileage-Price
+```{r}
+ggplot(car_price_prediction_) +
+  geom_smooth(mapping = aes(x = Mileage, y = Price), fill = "#302F2F") +
+  labs(title = "Precio por Distancia Recorrida",
+       x = "Distancia Recorrida",
+       y = "Precio") +
+  theme_minimal()
+```
+
+Gráfico Condition-Price
+```{r}
+ggplot(car_price_prediction_) +
+  geom_col(mapping = aes(x = Condition, y = Price), fill = "#302F2F") +
+  labs(title = "Precio por condición",
+       x = "Condición",
+       y = "Precio") +
+  theme_minimal()
+```
+
+```{r}
+ 
+```
+
