@@ -40,8 +40,6 @@ Verificación y limpieza de datos
 ## Verificar los datos faltantes en el dataset
 colSums(is.na(car_price_prediction_))
 
-## Por temas de simpleza, redondiemos los precios
-car_price_prediction_$Price <- round(car_price_prediction_$Price, 0)
 ```
 
 =====================
@@ -101,7 +99,7 @@ for (b in unique(car_price_prediction_$Brand)) {
   print(p)
 }
 ```
-
+Este gráfico muestra la distribución del tamaño del motor con respecto al precio, viendo está relacion en cada una de las diversas marcas expuestas.
 
 Gráfico Fuel-Brand-Price
 ```{r}
@@ -113,7 +111,7 @@ ggplot(car_price_prediction_) +
        x = "Tipo de Combustible",
        y = "Precio") 
 ```
-
+Este gráfico representa con respecto a las distintas marcas, y según el tipo de combistble del vehículo, la relación que tiene con el precio.
 
 Gráfico Transmission-Brand-Price
 ```{r}
@@ -125,38 +123,31 @@ ggplot(car_price_prediction_) +
        x = "Transmisión",
        y = "Precio")
 ```
-
+Este gráfico representa con respecto a las distintas marcas, y según la transmisión del vehículo, la relación que tiene con el precio. 
 
 Gráfico Mileage-Brand-Price
 ```{r}
-for (b in unique(car_price_prediction_$Brand)) {
-  
-  data_b <- subset(car_price_prediction_, Brand == b)
-  
-  gráficos <- ggplot(data_b, aes(x = Mileage, y = Price)) +
-    geom_point(alpha = 0.3, size = 1.8) + 
-    geom_smooth(
-      method = "loess",
-      color = "black",
-      fill = "#009E73",
-      alpha = 0.35,
-      linewidth = 1
-    ) +
-    labs(
-      title = paste("Relación: Mileage vs Precio –", b),
-      x = "Kilometraje",
-      y = "Precio"
-    ) +
-    scale_y_continuous(
-      labels = scales::comma_format(accuracy = 1)
-    ) +
-    scale_x_continuous(
-      labels = scales::comma_format(accuracy = 1)
-    )
-  print(gráficos)
-}
-```
+car_price_prediction_$Mileage_bin <- cut(
+  car_price_prediction_$Mileage,
+  breaks = 6,
+  labels = c("1", "2", "3", "4", "5", "6")
+)
 
+ggplot(car_price_prediction_, aes(x = Mileage_bin, y = Price, fill = Brand)) +
+  geom_boxplot(
+    show.legend = FALSE,
+    outlier.size = 0.95,
+    outlier.alpha = 0.6
+  ) +
+  facet_wrap(~ Brand, scales = "free_y") +
+  labs(
+    title = "Distribución del Precio por Rangos de Kilometraje y Marca",
+    x = "Rango de Kilometraje",
+    y = "Precio"
+  ) +
+  scale_y_continuous(labels = scales::comma_format(accuracy = 1))
+```
+Este gráfico representa con respecto a las distintas marcas, y según la distancia recorrida del vehículo, la relación que tiene con el precio.
 
 Gráfico Condition-Brand-Price
 ```{r}
@@ -168,4 +159,4 @@ ggplot(car_price_prediction_) +
        x = "Condición",
        y = "Precio")
 ```
-
+Este gráfico representa con respecto a las distintas marcas, y según la condición del vehículo, la relación que tiene con el precio. 
